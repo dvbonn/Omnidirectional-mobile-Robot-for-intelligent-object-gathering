@@ -1,0 +1,11 @@
+{
+  "_comment": "Astra (depth) camera intrinsics @ 640x480. The Orbbec OpenNI2 fork does NOT expose HORIZONTAL/VERTICAL_FOV (oniStreamGetProperty rc=4) -> use the standard Astra/PrimeSense factory values. Fine-tune with hand calibration if the error table needs higher accuracy.",
+  "width": 640,
+  "height": 480,
+  "fx": 570.3422,
+  "fy": 570.3422,
+  "cx": 319.5,
+  "cy": 239.5,
+  "depth_unit_mm": 1.0,
+  "source": "factory_default_astra_primesense"
+}

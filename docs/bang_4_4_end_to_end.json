@@ -1,0 +1,42 @@
+{
+  "bang": "4.4",
+  "tieu_de": "Độ trễ end-to-end: từ trigger đến output JSON cuối (Jetson AGX Xavier MAXN)",
+  "mo_ta": "Pipeline 2 tầng: YOLOv8n (cổng trigger, mọi frame) -> nếu có vật -> Qwen2.5-VL-3B Q4_K_M (offload toàn bộ, ngl=-1) sinh JSON quyết định. End-to-end = thời gian YOLO + (khi trigger) thời gian VLM round-trip.",
+  "ngay": "2026-06-12",
+  "moi_truong": {
+    "thiet_bi": "Jetson AGX Xavier, L4T R35.1",
+    "power_mode": "MAXN (nvpmodel 0) + jetson_clocks, 8 core @2265MHz",
+    "cau_hinh_vlm": "n_gpu_layers=-1 (offload 36/36 layer), ctx=2048, threads=4"
+  },
+  "phuong_phap": "Số end-to-end được GHÉP từ các thành phần ĐO THẬT: YOLO (Bảng 4.1, _yolo_raw.jsonl, MAXN 100 runs) + VLM round-trip /v1/chat/completions (Bảng 4.2, _vlm_sweep_raw.jsonl, ngl=-1, 3 runs). Phần ghép (YOLO + trigger + VLM) chạy tuần tự trong eval_accuracy.py. ĐÂY KHÔNG phải một phép đo wall-clock liên tục duy nhất.",
+  "don_vi": {"yolo": "ms", "vlm": "s", "end_to_end": "s"},
+  "ket_qua": {
+    "khi_co_trigger": {
+      "mo_ta": "Khung có vật -> YOLO phát hiện -> VLM xác nhận + sinh JSON. Đường dẫn đầy đủ.",
+      "yolo_ms": 23.6,
+      "trigger_overhead_ms": "≈0 (chỉ kiểm tra len(boxes)>0)",
+      "vlm_avg_s": 2.41,
+      "vlm_min_s": 2.17,
+      "vlm_max_s": 2.57,
+      "end_to_end_avg_s": 2.43,
+      "end_to_end_min_s": 2.19,
+      "end_to_end_max_s": 2.59
+    },
+    "khi_khong_trigger": {
+      "mo_ta": "Khung trống / không có vật -> dừng ở YOLO, collectible=False, KHÔNG gọi VLM.",
+      "yolo_ms": 23.6,
+      "end_to_end_avg_s": 0.0236
+    }
+  },
+  "tham_chieu_15w": {
+    "mo_ta": "Nếu trình bày theo chế độ 15W (cột chính Bảng 4.1) thay vì MAXN.",
+    "yolo_ms": 41.2,
+    "ghi_chu": "VLM ở 15W chưa đo riêng; con số 2.41s là MAXN. End-to-end 15W sẽ cao hơn tương ứng."
+  },
+  "ghi_chu": [
+    "End-to-end avg 2.43s = 23.6ms (YOLO) + ~2.41s (VLM). VLM chiếm >99% thời gian -> trọng tâm tối ưu là VLM (xem sweep n_gpu Bảng 4.2: ngl=-1 nhanh nhất 2.41s, ngl=0 chậm nhất 18.1s).",
+    "Cơ chế trigger giúp end-to-end trung bình theo thời gian thực THẤP hơn nhiều so với VLM-only: chỉ trả giá ~2.4s khi thực sự có vật, các khung trống chỉ tốn 23.6ms.",
+    "Để đo TRỰC TIẾP end-to-end (một đồng hồ duy nhất bao trùm YOLO->VLM), bọc time.perf_counter quanh cả 2 bước trong eval_accuracy.py và chạy lại."
+  ],
+  "nguon": ["docs/bang_4_1_yolo_performance.json", "docs/bang_4_2_vlm_ngpu_sweep.json", "docs/_yolo_raw.jsonl", "docs/_vlm_sweep_raw.jsonl"]
+}

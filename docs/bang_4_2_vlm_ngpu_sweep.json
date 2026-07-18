@@ -1,0 +1,53 @@
+{
+  "bang": "4.2",
+  "tieu_de": "Độ trễ và tài nguyên Qwen2.5-VL-3B Q4_K_M theo cấu hình",
+  "mo_ta": "Khảo sát n_gpu_layers trên Jetson AGX Xavier. Gọi trực tiếp llama-server (/v1/chat/completions, ảnh base64), prompt tiếng Việt từ layer2_brain/config.json. 1 warmup + 3 lần đo mỗi cấu hình, ảnh thật tools/Log/astra_demo/frame_0000.jpg.",
+  "ngay_do": "2026-06-12",
+  "moi_truong": {
+    "thiet_bi": "Jetson AGX Xavier, L4T R35.1",
+    "power_mode": "MAXN (nvpmodel 0) + jetson_clocks, 8 core @2265MHz",
+    "adapter": "FSP060-DHAN3 (60W)",
+    "model": "Qwen2.5-VL-3B-Instruct-Q4_K_M.gguf (1.8GB) + mmproj-f16 (1.3GB)",
+    "so_layer_llm": 36,
+    "ctx_size": 2048,
+    "threads": 4,
+    "nhiet_do_toi_da_quan_sat": "GPU 43.5°C / CPU 45.5°C (ngưỡng tự dừng đặt 80°C — không bao giờ chạm)"
+  },
+  "phuong_phap_do": {
+    "do_tre": "Thời gian round-trip /v1/chat/completions phía client (giây).",
+    "vram": "Jetson dùng UNIFIED MEMORY (không có VRAM rời). Số 'vram_mib' = bộ nhớ GPU (cudaMalloc) llama cấp phát cho mmproj + layer LLM offload + KV + compute, đo bằng delta torch.cuda.mem_get_info() device-global.",
+    "ram_rss": "RSS tiến trình llama-server (phần bộ nhớ phía CPU: layer LLM chưa offload + runtime).",
+    "ram_tong_khuyen_nghi": "= ram_rss + vram (tổng footprint vật lý của tiến trình llama, so sánh được với cột PC 4.1GB). Trên unified memory, vram là một phần của RAM.",
+    "json_ok": "Tỉ lệ phản hồi trích xuất được JSON hợp lệ (có khóa 'object')."
+  },
+  "ghi_chu_quan_trong": [
+    "mmproj (bộ mã hóa thị giác) LUÔN chạy trên GPU kể cả khi n_gpu=0 → ngl=0 vẫn tốn ~1510 MiB VRAM và chỉ chậm 18s (không thảm họa). Đây là khác biệt với cột PC (n_gpu=0 trên PC = hoàn toàn CPU, VRAM '—').",
+    "Trend đơn điệu: càng nhiều layer offload, độ trễ càng giảm (18.1s → 2.41s) và RAM RSS giảm trong khi VRAM tăng. Tổng footprint ~constant 3.7–4.4 GB (model cố định, chỉ đổi vị trí CPU↔GPU).",
+    "JSON OK = 100% ở MỌI cấu hình.",
+    "Cột Accuracy: ĐÃ ĐO = 74.5% (VLM-only, 38/51 ảnh — xem Bảng 4.3, đo 2026-06-12). Accuracy là thuộc tính của MODEL — n_gpu_layers chỉ đổi nơi tính toán, không đổi nội dung trả lời → accuracy giống nhau ở mọi cấu hình, chỉ đo MỘT lần.",
+    "ngl=-1 nghĩa là offload TOÀN BỘ (cả 36 layer). ngl=32 để 4 layer trên CPU."
+  ],
+  "don_vi": {"do_tre": "giây", "vram": "MiB", "ram": "MB/MiB"},
+  "ket_qua": {
+    "pc_n_gpu_0": {
+      "nguon": "Báo cáo gốc (PC, không đo lại)",
+      "do_tre_avg_s": 14.14,
+      "vram": "—",
+      "ram_tong": "4.1 GB",
+      "json_ok": "100%",
+      "accuracy": "— (không đo accuracy trên PC)"
+    },
+    "jetson": [
+      {"n_gpu": 0,  "do_tre_avg_s": 18.10, "do_tre_min_s": 16.58, "do_tre_max_s": 18.88, "vram_mib": 1510, "ram_rss_mb": 2928, "ram_tong_mib": 4438, "ram_tong_gb": 4.33, "json_ok": "3/3 (100%)", "accuracy": "74.5% (VLM-only, 38/51)", "ghi_chu": "LLM toàn bộ trên CPU; chỉ mmproj trên GPU"},
+      {"n_gpu": 8,  "do_tre_avg_s": 14.10, "do_tre_min_s": 13.80, "do_tre_max_s": 14.53, "vram_mib": 1930, "ram_rss_mb": 2587, "ram_tong_mib": 4517, "ram_tong_gb": 4.41, "json_ok": "3/3 (100%)", "accuracy": "74.5% (VLM-only, 38/51)"},
+      {"n_gpu": 16, "do_tre_avg_s": 11.05, "do_tre_min_s": 9.40,  "do_tre_max_s": 13.29, "vram_mib": 2113, "ram_rss_mb": 2227, "ram_tong_mib": 4340, "ram_tong_gb": 4.24, "json_ok": "3/3 (100%)", "accuracy": "74.5% (VLM-only, 38/51)"},
+      {"n_gpu": 24, "do_tre_avg_s": 7.18,  "do_tre_min_s": 6.44,  "do_tre_max_s": 8.07,  "vram_mib": 2283, "ram_rss_mb": 1863, "ram_tong_mib": 4146, "ram_tong_gb": 4.05, "json_ok": "3/3 (100%)", "accuracy": "74.5% (VLM-only, 38/51)"},
+      {"n_gpu": 32, "do_tre_avg_s": 4.73,  "do_tre_min_s": 4.51,  "do_tre_max_s": 4.85,  "vram_mib": 2441, "ram_rss_mb": 1499, "ram_tong_mib": 3940, "ram_tong_gb": 3.85, "json_ok": "3/3 (100%)", "accuracy": "74.5% (VLM-only, 38/51)"},
+      {"n_gpu": -1, "do_tre_avg_s": 2.41,  "do_tre_min_s": 2.17,  "do_tre_max_s": 2.57,  "vram_mib": 2501, "ram_rss_mb": 1257, "ram_tong_mib": 3758, "ram_tong_gb": 3.67, "json_ok": "3/3 (100%)", "accuracy": "74.5% (VLM-only, 38/51)", "ghi_chu": "offload toàn bộ — nhanh nhất 2.41s"}
+    ]
+  },
+  "gia_tri_dien_vao_bang": {
+    "huong_dan": "Mỗi hàng Jetson điền: Độ trễ avg = do_tre_avg_s | VRAM/GPU = vram_mib | RAM tổng = ram_tong_gb | JSON OK = 100% | Accuracy = 74.5% (VLM-only, mọi cấu hình)",
+    "raw_file": "docs/_vlm_sweep_raw.jsonl, docs/_vram_probe.jsonl"
+  }
+}

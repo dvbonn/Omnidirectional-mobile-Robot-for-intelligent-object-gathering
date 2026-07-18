@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:chart="clr-namespace:Syncfusion.Maui.Toolkit.Charts;assembly=Syncfusion.Maui.Toolkit"
+             xmlns:views="clr-namespace:Robot_controller.Views"
+             xmlns:models="clr-namespace:Robot_controller.Models"
+             x:Class="Robot_controller.Views.MotorChart"
+             x:DataType="views:MotorChart"
+             Title="MotorChart">
+    <ScrollView>
+
+        <Grid ColumnDefinitions="3*, *">
+            <chart:SfCartesianChart Grid.Column="0">
+                <chart:SfCartesianChart.ZoomPanBehavior>
+                    <chart:ChartZoomPanBehavior EnablePanning="True" EnableSelectionZooming="True"/>
+                </chart:SfCartesianChart.ZoomPanBehavior>
+                <chart:SfCartesianChart.Legend>
+                    <chart:ChartLegend IsVisible="True" Placement="Right" ToggleSeriesVisibility="True">
+                        <chart:ChartLegend.LabelStyle>
+                            <chart:ChartLegendLabelStyle TextColor="White" FontAttributes="Bold"/>
+                        </chart:ChartLegend.LabelStyle>
+                    </chart:ChartLegend>
+                </chart:SfCartesianChart.Legend>
+                <chart:SfCartesianChart.XAxes>
+                    <chart:CategoryAxis EdgeLabelsDrawingMode="Center">
+                        <chart:CategoryAxis.LabelStyle>
+                            <chart:ChartAxisLabelStyle TextColor="White" FontAttributes="Bold"/>
+                        </chart:CategoryAxis.LabelStyle>
+                    </chart:CategoryAxis>
+                </chart:SfCartesianChart.XAxes>
+                <chart:SfCartesianChart.YAxes>
+                    <chart:NumericalAxis>
+                        <chart:NumericalAxis.LabelStyle>
+                            <chart:ChartAxisLabelStyle TextColor="White" FontAttributes="Bold"/>
+                        </chart:NumericalAxis.LabelStyle>
+                    </chart:NumericalAxis>
+                </chart:SfCartesianChart.YAxes>
+
+                <chart:FastLineSeries Label="W1"
+                                      ItemsSource="{Binding ChartData}"
+                                      XBindingPath="TimeStamp"
+                                      YBindingPath="W1"
+                                      EnableTooltip="True"
+                                      Fill="Red"
+                                      StrokeWidth="3"/>
+
+                <chart:FastLineSeries Label="W2"
+                                      ItemsSource="{Binding ChartData}"
+                                      XBindingPath="TimeStamp"
+                                      YBindingPath="W2"
+                                      EnableTooltip="True"
+                                      Fill="LightGreen"
+                                      StrokeWidth="3"/>
+
+                <chart:FastLineSeries Label="W3"
+                                      ItemsSource="{Binding ChartData}"
+                                      XBindingPath="TimeStamp"
+                                      YBindingPath="W3"
+                                      EnableTooltip="True"
+                                      Fill="Yellow"
+                                      StrokeWidth="3"/>
+
+                <chart:FastLineSeries Label="W4"
+                                      ItemsSource="{Binding ChartData}"
+                                      XBindingPath="TimeStamp"
+                                      YBindingPath="W4"
+                                      EnableTooltip="True"
+                                      Fill="Orange"
+                                      StrokeWidth="3"/>
+
+            </chart:SfCartesianChart>
+            <VerticalStackLayout Grid.Column="1" Spacing="10" Padding="10">
+                <Border StrokeShape="RoundRectangle 10"
+                        StrokeThickness="1"
+                        Stroke="LightGray"
+                        Padding="10">
+                    <VerticalStackLayout Spacing="8">
+                        <Button x:Name="SetSpeedBtn" Clicked="SetSpeedBtn_Clicked"  Text="Set speed"></Button>
+                        <HorizontalStackLayout HorizontalOptions="Center" Scale="0.9">
+                            <Label Text="W1" VerticalOptions="Center"/>
+                            <CheckBox x:Name="CheckBoxW1" Color="Red"/>
+                            <Label Text="W2" VerticalOptions="Center"/>
+                            <CheckBox x:Name="CheckBoxW2" Color="LightGreen"/>
+                            <Label Text="W3" VerticalOptions="Center"/>
+                            <CheckBox x:Name="CheckBoxW3" Color="Yellow"/>
+                            <Label Text="W4" VerticalOptions="Center"/>
+                            <CheckBox x:Name="CheckBoxW4" Color="Orange"/>
+                        </HorizontalStackLayout>
+                        <Entry x:Name="SpeedEntry" Placeholder="0"></Entry>
+                    </VerticalStackLayout>
+                </Border>
+                <CollectionView ItemsSource="{Binding Specs}">
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout Orientation="Vertical" ItemSpacing="8"/>
+                    </CollectionView.ItemsLayout>
+
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:Motor_Second_Order_Specs">
+                            <Border StrokeShape="RoundRectangle 10"
+                                    StrokeThickness="1"
+                                    Stroke="LightGray"
+                                    Padding="10">
+                                <VerticalStackLayout Spacing="8">
+                                    <Label Text="{Binding MotorID, StringFormat='W{0:D}'}" VerticalOptions="Center"/>
+                                    <HorizontalStackLayout HorizontalOptions="Center" Scale="0.9" Spacing="8">
+                                        <Label Text="{Binding J, StringFormat='J: {0:F2}'}"/>
+                                        <Label Text="{Binding B, StringFormat='B: {0:F2}'}"/>
+                                        <Label Text="{Binding K1, StringFormat='K1: {0:F2}'}"/>
+                                        <Label Text="{Binding K2, StringFormat='K2: {0:F2}'}"/>
+                                    </HorizontalStackLayout>
+                                </VerticalStackLayout>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+
+                </CollectionView>
+                <Button x:Name="GetSpecs" Clicked="GetSpecs_Clicked" Text="Get motor specs"></Button>
+            </VerticalStackLayout>
+        </Grid>
+    </ScrollView>
+</ContentPage>

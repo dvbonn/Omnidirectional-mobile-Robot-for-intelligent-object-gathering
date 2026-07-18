@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>vlm_nav_orchestrator</name>
+  <version>0.0.1</version>
+  <description>T10 orchestrator: YOLO detect -> drive to the object (Hybrid: NAV2 NavigateToPose map-goal + final visual servoing). bbox+depth+tf->map pose (geometry.py, unit-tested). See docs/PLAN_SLAM_NAV2.md.</description>
+  <maintainer email="ndtrung2407@gmail.com">dvbonn</maintainer>
+  <license>MIT</license>
+
+  <exec_depend>rclpy</exec_depend>
+  <exec_depend>rclpy_action</exec_depend>
+  <exec_depend>geometry_msgs</exec_depend>
+  <exec_depend>nav_msgs</exec_depend>
+  <exec_depend>nav2_msgs</exec_depend>
+  <exec_depend>sensor_msgs</exec_depend>
+  <exec_depend>std_msgs</exec_depend>
+  <exec_depend>action_msgs</exec_depend>
+  <exec_depend>tf2_ros</exec_depend>
+  <exec_depend>tf2_geometry_msgs</exec_depend>
+  <exec_depend>python3-numpy</exec_depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>

@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>robot_bringup</name>
+  <version>0.0.1</version>
+  <description>Combined launch files (view/slam/nav/sim) for the collecting robot. See docs/PLAN_SLAM_NAV2.md.</description>
+  <maintainer email="ndtrung2407@gmail.com">dvbonn</maintainer>
+  <license>MIT</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <exec_depend>robot_description</exec_depend>
+  <exec_depend>rosbridge_server</exec_depend>
+  <exec_depend>astra_ros</exec_depend>
+  <exec_depend>yolo_ros</exec_depend>
+  <exec_depend>base_bridge</exec_depend>
+  <exec_depend>depthimage_to_laserscan</exec_depend>
+  <exec_depend>slam_toolbox</exec_depend>
+  <exec_depend>nav2_bringup</exec_depend>
+  <exec_depend>launch</exec_depend>
+  <exec_depend>launch_ros</exec_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

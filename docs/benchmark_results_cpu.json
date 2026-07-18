@@ -1,0 +1,20 @@
+{
+  "timestamp": "2026-06-10 14:04:12",
+  "yolo": {
+    "fps": 1.2,
+    "latency_avg_ms": 852.4,
+    "latency_min_ms": 759.0,
+    "latency_max_ms": 989.5,
+    "ram_model_mb": 17.0,
+    "ram_total_mb": 326.0,
+    "avg_detections": 0.0,
+    "n_runs": 50
+  },
+  "vlm": null,
+  "system": {
+    "offline_capable": false,
+    "hf_hub_offline": false,
+    "vlm_handles_unknown": true,
+    "yolo_handles_unknown": false
+  }
+}

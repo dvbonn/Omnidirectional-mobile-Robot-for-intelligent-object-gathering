@@ -1,0 +1,79 @@
+{
+  "bang": "4.5",
+  "tieu_de": "Chỉ số edge khi chạy: nhiệt độ GPU/CPU, tần số GPU, công suất (Jetson AGX Xavier MAXN)",
+  "mo_ta": "Trích từ tegrastats lấy mẫu mỗi 2 giây trong suốt phiên benchmark 2026-06-12, cộng với nhiệt độ trước/sau mỗi cấu hình của VLM sweep.",
+  "ngay": "2026-06-12",
+  "moi_truong": {
+    "thiet_bi": "Jetson AGX Xavier, L4T R35.1",
+    "power_mode": "MAXN (nvpmodel 0) + jetson_clocks, 8 core @2265MHz",
+    "adapter": "FSP060-DHAN3 (60W)",
+    "nguong_tu_dung_nhiet": "80°C (không bao giờ chạm)"
+  },
+  "phuong_phap_do": {
+    "nguon_chinh": "Log/tegrastats_bench.log (9709 mẫu @2s, 11:51–17:16)",
+    "nhiet_do": "GPU@ / CPU@ trong tegrastats (°C).",
+    "gpu_freq": "tegrastats chỉ ghi GR3D dưới dạng UTILIZATION (%), KHÔNG ghi clock MHz. Ở MAXN + jetson_clocks, GPU clock được ghim cố định (Xavier tối đa ~1377 MHz) nhưng không được log ra MHz.",
+    "cpu_freq": "Tần số core CPU lấy từ trường @<MHz> trong tegrastats.",
+    "cong_suat": "KHÔNG ĐO trực tiếp trong phiên benchmark. tegrastats trên build L4T này không xuất power rails (mW); đọc trực tiếp INA3221 (/sys/class/hwmon/hwmon3,4) cần quyền root (Permission denied khi đo). Hiện cung cấp số ƯỚC LƯỢNG (xem 'uoc_luong_cong_suat_w'), CHƯA thay được cho phép đo thật bằng INA3221."
+  },
+  "don_vi": {"nhiet_do": "°C", "gpu_util": "%", "cpu_clk": "MHz", "cong_suat": "W"},
+  "ket_qua": {
+    "vlm_sweep_window": {
+      "mo_ta": "Cửa sổ sweep n_gpu_layers VLM (11:51–12:12), 645 mẫu.",
+      "gpu_temp_min_avg_max_c": [38.0, 41.3, 50.0],
+      "cpu_temp_min_avg_max_c": [38.0, 41.6, 46.0],
+      "gpu_util_avg_max_pct": [4.8, 99],
+      "cpu_clk_max_mhz": 2265
+    },
+    "accuracy_eval_window": {
+      "mo_ta": "Cửa sổ chạy VLM tải liên tục 51 ảnh (16:00–16:35), 1075 mẫu — đại diện tải bền vững nhất.",
+      "gpu_temp_min_avg_max_c": [36.5, 40.5, 44.5],
+      "cpu_temp_min_avg_max_c": [36.5, 39.9, 43.5],
+      "gpu_util_avg_max_pct": [42.6, 99],
+      "gpu_util_active_avg_pct": 95.4,
+      "cpu_clk_max_mhz": 2188
+    },
+    "toan_phien": {
+      "mo_ta": "Toàn bộ phiên benchmark (11:51–17:16), 9709 mẫu.",
+      "gpu_temp_min_avg_max_c": [35.5, 37.3, 50.0],
+      "cpu_temp_min_avg_max_c": [35.5, 37.2, 46.0],
+      "gpu_util_avg_max_pct": [5.0, 99],
+      "cpu_clk_max_mhz": 2265
+    },
+    "vlm_sweep_per_config_temps": {
+      "mo_ta": "Nhiệt độ GPU/CPU trước→sau mỗi cấu hình (từ _vlm_sweep_raw.jsonl, temps_before/after).",
+      "don_vi": "°C",
+      "rows": [
+        {"ngl": -1, "gpu_before_after": [39.5, 43.0], "cpu_before_after": [40.0, 43.0]},
+        {"ngl": 32, "gpu_before_after": [42.0, 43.0], "cpu_before_after": [43.0, 43.0]},
+        {"ngl": 24, "gpu_before_after": [42.5, 43.0], "cpu_before_after": [42.5, 43.0]},
+        {"ngl": 16, "gpu_before_after": [42.5, 43.0], "cpu_before_after": [43.0, 43.5]},
+        {"ngl": 8,  "gpu_before_after": [42.5, 43.0], "cpu_before_after": [43.5, 43.5]},
+        {"ngl": 0,  "gpu_before_after": [43.0, 43.0], "cpu_before_after": [44.0, 43.0]}
+      ]
+    },
+    "cong_suat_w_uoc_luong": "ƯỚC LƯỢNG (chưa đo trực tiếp): ~9 W nhàn rỗi / ~29 W khi tải / ~30 W đỉnh — xem 'uoc_luong_cong_suat_w'"
+  },
+  "uoc_luong_cong_suat_w": {
+    "CANH_BAO": "SỐ ƯỚC LƯỢNG, KHÔNG ĐO TRỰC TIẾP. Suy ra từ mức sử dụng GPU (GR3D) đo thật kết hợp dải công suất đặc trưng của AGX Xavier ở chế độ MAXN. Phải thay bằng số đo INA3221 trước khi dùng làm kết quả chính thức trong luận văn.",
+    "mo_hinh": "P(W) = P_idle + (P_max - P_idle) * GR3D_util / 100",
+    "tham_so": {
+      "P_idle_w": 9.0,
+      "P_max_w": 30.0,
+      "co_so_gia_dinh": "AGX Xavier MAXN: công suất module ~9 W lúc nhàn rỗi, ~30 W khi tải đầy GPU (đặc trưng SoC Volta 512-core + 8 core Carmel @2265 MHz)."
+    },
+    "ket_qua": {
+      "nhan_roi_w": 9.0,
+      "tb_khi_tai_w": 29.0,
+      "dinh_w": 29.8,
+      "co_so_tinh": "Cửa sổ accuracy_eval: GR3D active avg 95.4% → 9 + 21×0.954 ≈ 29.0 W; đỉnh GR3D 99% → 9 + 21×0.99 ≈ 29.8 W."
+    }
+  },
+  "ghi_chu": [
+    "Đỉnh nhiệt cả phiên: GPU 50°C / CPU 46°C — cách xa ngưỡng tự dừng 80°C. Spike 50°C xảy ra trong cửa sổ sweep (kèm bench YOLO CUDA MAXN, GPU util 99%).",
+    "GR3D util trung bình toàn phiên thấp (~5%) vì phần lớn thời gian idle giữa các lần đo; khi VLM/YOLO chạy thực, util đạt ~95–99%.",
+    "Công suất hiện là ƯỚC LƯỢNG (suy từ GR3D util đo thật, mô hình tuyến tính). Cần đo trực tiếp bằng INA3221 (sudo) để thay thế trước khi chốt số liệu chính thức.",
+    "Hình 4.5 panel (b) vẽ công suất ước lượng theo thời gian, có ghi rõ 'KHÔNG đo trực tiếp' và công thức mô hình."
+  ],
+  "nguon": ["Log/tegrastats_bench.log", "docs/_vlm_sweep_raw.jsonl"]
+}

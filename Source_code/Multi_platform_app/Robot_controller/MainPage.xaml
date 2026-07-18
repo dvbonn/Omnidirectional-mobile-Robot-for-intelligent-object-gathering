@@ -1,0 +1,292 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:tool="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:views="clr-namespace:Robot_controller.Views"
+             xmlns:models="clr-namespace:Robot_controller.Models"
+             xmlns:local="clr-namespace:Robot_controller"
+             x:DataType="local:MainPage"
+             x:Class="Robot_controller.MainPage"
+             Title="Bảng điều khiển Robot">
+
+    <ContentPage.Resources>
+        <models:MapDrawable x:Key="MapDrawable"/>
+        <views:ColorConverter x:Key="SignToColor" /> 
+    </ContentPage.Resources>
+
+    <Grid ColumnDefinitions="3*, 2*">
+        <GraphicsView x:Name="RobotCanvas" 
+                      Drawable="{StaticResource MapDrawable}"
+                      Grid.Column="0"
+                      BackgroundColor="#222222">
+            <GraphicsView.GestureRecognizers>
+                <PanGestureRecognizer PanUpdated="PanGestureRecognizer_PanUpdated"/>
+                <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" NumberOfTapsRequired="2"/>
+            </GraphicsView.GestureRecognizers>
+        </GraphicsView>
+        
+        <ScrollView Grid.Column="1" BackgroundColor="Black">
+            <VerticalStackLayout Spacing="10" Padding="10">
+
+                <Border StrokeShape="RoundRectangle 10" 
+                        StrokeThickness="1"
+                        Stroke="LightGray"
+                        Padding="10">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="Trạng thái Robot"
+                               FontSize="16"
+                               FontAttributes="Bold" />
+
+                        <Grid ColumnDefinitions="*, 3*" 
+                              RowDefinitions="Auto, Auto, Auto, Auto, Auto"
+                              RowSpacing="5"
+                              ColumnSpacing="10">
+
+                            <Label Text="Ekf:" Grid.Row="0" Grid.Column="0" FontAttributes="Bold" />
+                            <Grid ColumnDefinitions="*, *"  RowDefinitions="Auto, Auto, Auto"
+                                  ColumnSpacing="10"
+                                  RowSpacing="5"
+                                  Grid.Row="0"
+                                  Grid.Column="1"
+                                  BindingContext="{Binding Ekf}"
+                                  x:DataType="models:EKF">
+                                <HorizontalStackLayout Grid.Row="0" Grid.Column="0" Spacing="5">
+                                    <Label Text="x:" TextColor="White" />
+                                    <Label Text="{Binding X, StringFormat='{0:F4}'}" TextColor="{Binding X, Converter={StaticResource SignToColor}}" />
+                                </HorizontalStackLayout>
+
+                                <HorizontalStackLayout Grid.Row="1" Grid.Column="0" Spacing="5">
+                                    <Label Text="y:" TextColor="White" />
+                                    <Label Text="{Binding Y, StringFormat='{0:F4}'}" TextColor="{Binding Y, Converter={StaticResource SignToColor}}" />
+                                </HorizontalStackLayout>
+
+                                <HorizontalStackLayout Grid.Row="2" Grid.Column="0" Spacing="5">
+                                    <Label Text="&#x03B8;:" TextColor="White" />
+                                    <Label Text="{Binding Theta, StringFormat='{0:F4}'}" TextColor="{Binding Theta, Converter={StaticResource SignToColor}}" />
+                                </HorizontalStackLayout>
+
+                                <HorizontalStackLayout Grid.Row="0" Grid.Column="1" Spacing="5">
+                                    <Label Text="Vx:" TextColor="White" />
+                                    <Label Text="{Binding V_X, StringFormat='{0:F4}'}" TextColor="{Binding V_X, Converter={StaticResource SignToColor}}" />
+                                </HorizontalStackLayout>
+
+                                <HorizontalStackLayout Grid.Row="1" Grid.Column="1" Spacing="5">
+                                    <Label Text="Vy:" TextColor="White" />
+                                    <Label Text="{Binding V_Y, StringFormat='{0:F4}'}" TextColor="{Binding V_Y, Converter={StaticResource SignToColor}}" />
+                                </HorizontalStackLayout>
+
+                                <HorizontalStackLayout Grid.Row="2" Grid.Column="1" Spacing="5">
+                                    <Label Text="&#x03C9;:" TextColor="White" />
+                                    <Label Text="{Binding Omega, StringFormat='{0:F4}'}" TextColor="{Binding Omega, Converter={StaticResource SignToColor}}" />
+                                </HorizontalStackLayout>
+
+                            </Grid>
+
+                            <Label Text="PMW3901:" Grid.Row="1" Grid.Column="0" FontAttributes="Bold" />
+                            <Grid RowDefinitions="Auto, Auto"
+                                  RowSpacing="5"
+                                  Grid.Row="1"
+                                  Grid.Column="1"
+                                  BindingContext="{Binding PMW3901}"
+                                  x:DataType="models:PMW3901Data">
+                                <HorizontalStackLayout Grid.Row="0" Spacing="5">
+                                    <Label Text="Vx:" TextColor="White" />
+                                    <Label Text="{Binding V_X, StringFormat='{0:F4}'}" TextColor="{Binding V_X, Converter={StaticResource SignToColor}}" />
+                                </HorizontalStackLayout>
+
+                                <HorizontalStackLayout Grid.Row="1" Spacing="5">
+                                    <Label Text="Vy:" TextColor="White" />
+                                    <Label Text="{Binding V_Y, StringFormat='{0:F4}'}" TextColor="{Binding V_Y, Converter={StaticResource SignToColor}}" />
+                                </HorizontalStackLayout>
+                            </Grid>
+
+                            <Label Text="Localize:" Grid.Row="2" Grid.Column="0" FontAttributes="Bold" />
+                            <Label x:Name="LocalizeStatusLabel" Text="-- Đang chờ --" Grid.Row="2" Grid.Column="1" />
+
+                            <Label Text="BNO055:" Grid.Row="3" Grid.Column="0" FontAttributes="Bold" />
+                            <Grid Grid.Row="3"
+                                  Grid.Column="1"
+                                  BindingContext="{Binding BNO055}"
+                                  x:DataType="models:BNO055Data">
+                                <HorizontalStackLayout Spacing="5">
+                                    <Label Text="Heading:" TextColor="White" />
+                                    <Label Text="{Binding Heading, StringFormat='{0:F4}'}" TextColor="{Binding Heading, Converter={StaticResource SignToColor}}" />
+                                </HorizontalStackLayout>
+
+                            </Grid>
+
+                            <Label Text="Vận tốc bánh xe (rad/s):" Grid.Row="4" Grid.Column="0" FontAttributes="Bold"/>
+                            <Grid ColumnDefinitions="*, *"  RowDefinitions="Auto, Auto"
+                                  ColumnSpacing="10"
+                                  RowSpacing="5"
+                                  Grid.Row="4"
+                                  Grid.Column="1"
+                                  BindingContext="{Binding Speeds}"
+                                  x:DataType="models:WheelSpeed">
+                                <HorizontalStackLayout Grid.Row="0" Grid.Column="0" Spacing="5">
+                                    <Label Text="W2:" TextColor="White" />
+                                    <Label Text="{Binding W2, StringFormat='{0:F2}'}" TextColor="{Binding W2, Converter={StaticResource SignToColor}}" />
+                                </HorizontalStackLayout>
+
+                                <HorizontalStackLayout Grid.Row="0" Grid.Column="1" Spacing="5">
+                                    <Label Text="W1:" TextColor="White" />
+                                    <Label Text="{Binding W1, StringFormat='{0:F2}'}" TextColor="{Binding W1, Converter={StaticResource SignToColor}}" />
+                                </HorizontalStackLayout>
+
+                                <HorizontalStackLayout Grid.Row="1" Grid.Column="0" Spacing="5">
+                                    <Label Text="W3:" TextColor="White" />
+                                    <Label Text="{Binding W3, StringFormat='{0:F2}'}" TextColor="{Binding W3, Converter={StaticResource SignToColor}}" />
+                                </HorizontalStackLayout>
+
+                                <HorizontalStackLayout Grid.Row="1" Grid.Column="1" Spacing="5">
+                                    <Label Text="W4:" TextColor="White" />
+                                    <Label Text="{Binding W4, StringFormat='{0:F2}'}" TextColor="{Binding W4, Converter={StaticResource SignToColor}}" />
+                                </HorizontalStackLayout>
+                            </Grid>
+
+
+                        </Grid>
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border StrokeShape="RoundRectangle 10"
+                        StrokeThickness="1"
+                        Stroke="LightGray"
+                        Padding="10">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="Thu dữ liệu"
+                               FontSize="16"
+                               FontAttributes="Bold"/>
+                        <Button x:Name="CollectDataBtn" 
+                                Text="Bắt đầu"
+                                Clicked="CollectDataBtn_Clicked"/>
+                        <Button x:Name="StopCollectBtn"
+                                Text="Kết thúc"
+                                IsEnabled="False"
+                                Clicked="StopCollectBtn_Clicked"/>
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border StrokeShape="RoundRectangle 10" 
+                        StrokeThickness="1"
+                        Stroke="LightGray"
+                        Padding="10">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="Động cơ"
+                               FontSize="16"
+                               FontAttributes="Bold" />
+
+                        <Button x:Name="AutoPidButton" 
+                                Clicked="AutoPidButton_Clicked" 
+                                Text="Turning PID" 
+                                Margin="0,5,0,0" />
+                        <Button x:Name="ShowMotorChartButton" 
+                                Clicked="ShowMotorChartButton_Clicked"
+                                Text="Xem Biểu đồ Động cơ" />
+
+                        <GraphicsView x:Name="MotorChartView" 
+                                      HeightRequest="150" 
+                                      IsVisible="False" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border StrokeShape="RoundRectangle 10" 
+                        StrokeThickness="1"
+                        Stroke="LightGray"
+                        Padding="10">
+                <VerticalStackLayout Spacing="8">
+                        <Label Text="BNO055"
+                               FontSize="16"
+                               FontAttributes="Bold" 
+                               BindingContext="{Binding BNO055}"/>
+                        <Grid ColumnDefinitions="1.5*, *, *"
+                              ColumnSpacing="10"
+                              BindingContext="{Binding BNO055}"
+                              x:DataType="models:BNO055Data">
+                            <Label Text="Calibration status:" Grid.Column="0" FontAttributes="Bold"/>
+                            <HorizontalStackLayout Grid.Column="1" Spacing="5">
+                                <Label Text="Accel:" TextColor="White" />
+                                <Label Text="{Binding Accel_Status, StringFormat='{0:X}'}" TextColor="{Binding Accel_Status, Converter={StaticResource SignToColor}}" />
+                            </HorizontalStackLayout>
+                            <HorizontalStackLayout Grid.Column="2" Spacing="5">
+                                <Label Text="Gyro:" TextColor="White" />
+                                <Label Text="{Binding Gyro_Status, StringFormat='{0:X}'}" TextColor="{Binding Gyro_Status, Converter={StaticResource SignToColor}}" />
+                            </HorizontalStackLayout>
+                        </Grid>
+                        <Button x:Name="ReCalibrationBtn" 
+                                Clicked="ReCalibrationBtn_Clicked"
+                                Text="Recalibration" 
+                                Margin="0,5,0,0" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border StrokeShape="RoundRectangle 10" 
+                        StrokeThickness="1"
+                        Stroke="LightGray"
+                        Padding="10">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="Cấu hình WiFi Robot"
+                               FontSize="16"
+                               FontAttributes="Bold" />
+
+                        <Label Text="Tên mạng (SSID):" />
+                        <Entry x:Name="WifiSsidEntry" Placeholder="Nhập SSID"
+                               IsSpellCheckEnabled="False"
+                               IsTextPredictionEnabled="False">
+                            <Entry.Behaviors>
+                                <tool:TextValidationBehavior x:Name="SSIDValid" Flags="ValidateOnAttaching,ValidateOnValueChanged"
+                                    MinimumLength="1" />
+                            </Entry.Behaviors>
+                        </Entry>
+
+                        <Label Text="Mật khẩu:" />
+                        <Entry x:Name="WifiPasswordEntry" 
+                               IsPassword="True" 
+                               Placeholder="Nhập mật khẩu">
+                            <Entry.Behaviors>
+                                <tool:TextValidationBehavior x:Name="PassValid" Flags="ValidateOnAttaching,ValidateOnValueChanged"
+                                    MinimumLength="8" />
+                            </Entry.Behaviors>
+                        </Entry>
+
+                        <Button x:Name="ConnectWifiButton" 
+                                Clicked="ConnectWifiButton_Clicked"
+                                Text="Kết nối" 
+                                Margin="0,10,0,0" />
+
+                        <Label x:Name="WifiStatusLabel" 
+                               HorizontalTextAlignment="Center">
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span Text="Trạng thái: " />
+                                    <Span Text="{Binding SocketState}"
+                                          TextColor="{Binding SocketStateColor}"/>
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
+                    </VerticalStackLayout>
+                </Border>
+                <Border StrokeShape="RoundRectangle 10" 
+                        StrokeThickness="1"
+                        Stroke="LightGray"
+                        Padding="10">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="Update firmware"
+                               FontSize="16"    
+                               FontAttributes="Bold" />
+                        <Button x:Name="SelectFirmwarreBtn"
+                                Text="Chọn file firmware"
+                                Clicked="SelectFirmwarreBtn_Clicked"/>
+                        <Button x:Name="UpdateOTABtn"
+                                Text="Cập nhật OTA"
+                                IsEnabled="False"
+                                Clicked="UpdateOTABtn_Clicked"/>
+                        <ProgressBar x:Name="UpdateProgressBar" IsVisible="False" Progress="0"/>
+                    </VerticalStackLayout>
+                </Border>
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+
+</ContentPage>
+

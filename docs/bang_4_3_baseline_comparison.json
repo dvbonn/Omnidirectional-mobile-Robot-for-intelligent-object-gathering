@@ -1,0 +1,49 @@
+{
+  "bang": "4.3",
+  "tieu_de": "So sánh hệ đề xuất với hai baseline trên cùng tập 50 ảnh",
+  "mo_ta": "So sánh YOLO-only vs VLM-only vs Đề xuất (YOLO+VLM). Các tiêu chí định tính giữ theo báo cáo; độ trễ bổ sung số ĐO THẬT trên Jetson MAXN.",
+  "ngay_cap_nhat": "2026-06-12",
+  "tieu_chi": {
+    "co_suy_luan_ngu_nghia": {
+      "yolo_only": "Không",
+      "vlm_only": "Có",
+      "de_xuat": "Có"
+    },
+    "do_tre_trung_binh": {
+      "yolo_only": "~24 ms (CUDA MAXN, đo) / ~41 ms (15W) / báo cáo ghi ~50 ms",
+      "vlm_only": "~2.4 s (Jetson MAXN, offload toàn bộ, đo) — báo cáo ghi ~14 s (đo trên PC)",
+      "de_xuat": "~2.4 s nhưng CÓ trigger (chỉ chạy VLM khi cần)",
+      "ghi_chu": "Số gốc trong báo cáo (~50ms / ~14s) là đo trên PC/15W. Trên Jetson MAXN, VLM full-GPU chỉ 2.41s (xem Bảng 4.2)."
+    },
+    "tai_vlm": {
+      "yolo_only": "—",
+      "vlm_only": "Mọi frame",
+      "de_xuat": "Chỉ khi trigger ổn định"
+    },
+    "ho_tro_tieng_viet": {
+      "yolo_only": "Không",
+      "vlm_only": "Có",
+      "de_xuat": "Có"
+    },
+    "offline": {
+      "yolo_only": "Có",
+      "vlm_only": "Có",
+      "de_xuat": "Có"
+    },
+    "accuracy_collectibility": {
+      "yolo_only": "51.0% (26/51)",
+      "vlm_only": "74.5% (38/51)",
+      "de_xuat": "66.7% (34/51)",
+      "trang_thai": "ĐÃ ĐO 2026-06-12 trên 51 ảnh tự chụp Astra (31 collectible) — xem bang_4_3_accuracy_results.json."
+    }
+  },
+  "huong_dan_do_accuracy_sau": {
+    "can": "50 ảnh + file nhãn ground-truth (mỗi ảnh: object, collectible true/false).",
+    "yolo_only": "Map class YOLO → collectible bằng danh sách cứng (vd. bottle/can = collectible) → so với nhãn. Không suy luận được vật lạ.",
+    "vlm_only": "Gửi từng ảnh qua Qwen2.5-VL → đọc trường 'collectible' → so với nhãn.",
+    "de_xuat": "YOLO phát hiện → trigger → VLM xác nhận 'collectible' → so với nhãn.",
+    "metric": "accuracy = số quyết định collectible đúng / 50.",
+    "san_sang": "scripts/bench_vlm_config.py + brain_server.py đã chạy được JSON 100%, chỉ cần thả 50 ảnh + nhãn là đo được ngay."
+  },
+  "ket_luan_dinh_tinh": "Hệ đề xuất giữ khả năng suy luận ngữ nghĩa + tiếng Việt của VLM nhưng không trả giá bằng tải tính toán liên tục như VLM-only (nhờ trigger). Trên Jetson MAXN, bước VLM chỉ ~2.4s/lần khi được kích hoạt."
+}

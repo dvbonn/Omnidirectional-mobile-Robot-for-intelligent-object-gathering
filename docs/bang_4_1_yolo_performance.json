@@ -1,0 +1,79 @@
+{
+  "bang": "4.1",
+  "tieu_de": "Hiệu năng YOLOv8n trên PC và Jetson Xavier",
+  "mo_ta": "Đo inference YOLOv8n trên frame 640x640. PC lấy từ báo cáo gốc; Jetson đo trực tiếp trên thiết bị (AGX Xavier, L4T R35.1).",
+  "ghi_chu_quan_trong": [
+    "Cột chính của bảng giữ ở chế độ 15W để NHẤT QUÁN với các ô FPS đã in sẵn trong báo cáo (CPU 1.2 / CUDA 24.3).",
+    "Jetson CPU đo bằng torch 2.4.1 (kernel CPU tối ưu). Jetson CUDA đo bằng torch 1.13 NVIDIA build (bắt buộc cho CUDA trên Xavier sm_72).",
+    "Khối 'maxn_tham_khao' là số đo lại ở chế độ MAXN (8 core @2265MHz) ngày 2026-06-12 — dùng nếu muốn trình bày năng lực đỉnh, NHƯNG khi đó phải cập nhật cả ô FPS.",
+    "RAM model = RSS tăng thêm khi nạp model (trước inference). RAM tổng = RSS tiến trình sau khi nạp (cùng phương pháp benchmark.py gốc, đo trước khi CUDA context nạp cuDNN/cuBLAS)."
+  ],
+  "don_vi": {
+    "fps_trung_binh": "FPS",
+    "do_tre": "ms",
+    "ram": "MB"
+  },
+  "ket_qua": {
+    "pc_cpu": {
+      "nguon": "Báo cáo gốc (không đo lại trên Jetson)",
+      "fps_trung_binh": 106.3,
+      "do_tre_trung_binh_ms": 9.4,
+      "do_tre_min_ms": 7.6,
+      "do_tre_max_ms": 17.6,
+      "ram_model_mb": 21,
+      "ram_tong_tien_trinh_mb": 450,
+      "ghi_chu": "≈450 MB"
+    },
+    "jetson_cpu_only": {
+      "nguon": "Đo trên Jetson — docs/benchmark_results_cpu.json (torch 2.4.1, 15W, 50 runs)",
+      "fps_trung_binh": 1.2,
+      "do_tre_trung_binh_ms": 852.4,
+      "do_tre_min_ms": 759.0,
+      "do_tre_max_ms": 989.5,
+      "ram_model_mb": 17,
+      "ram_tong_tien_trinh_mb": 326,
+      "n_runs": 50
+    },
+    "jetson_cuda": {
+      "nguon": "Đo trên Jetson — docs/benchmark_results.json (torch 1.13 NVIDIA, 15W, 100 runs)",
+      "fps_trung_binh": 24.3,
+      "do_tre_trung_binh_ms": 41.2,
+      "do_tre_min_ms": 40.3,
+      "do_tre_max_ms": 44.9,
+      "ram_model_mb": 20,
+      "ram_tong_tien_trinh_mb": 321,
+      "n_runs": 100
+    }
+  },
+  "maxn_tham_khao": {
+    "mo_ta": "Đo lại 2026-06-12 ở MAXN + 8 core @2265MHz (cùng frame test 640x640).",
+    "jetson_cuda_maxn": {
+      "torch": "1.13.0a0+nv22.12",
+      "fps_trung_binh": 42.4,
+      "do_tre_trung_binh_ms": 23.6,
+      "do_tre_min_ms": 23.1,
+      "do_tre_max_ms": 24.5,
+      "ram_model_mb": 20,
+      "ram_tong_pre_inference_mb": 321,
+      "ram_steady_infer_mb": 2034,
+      "n_runs": 100,
+      "ghi_chu": "MAXN gần gấp đôi FPS so với 15W (24.3 -> 42.4). RAM steady 2034MB gồm cuDNN/cuBLAS runtime khi inference thực tế."
+    },
+    "jetson_cpu_maxn_torch113": {
+      "torch": "1.13.0a0+nv22.12 (CUDA build, nhánh CPU KHÔNG tối ưu)",
+      "fps_trung_binh": 0.4,
+      "do_tre_trung_binh_ms": 2421.0,
+      "do_tre_min_ms": 2380.2,
+      "do_tre_max_ms": 2495.0,
+      "ram_model_mb": 19,
+      "ram_tong_pre_inference_mb": 321,
+      "ram_steady_infer_mb": 376,
+      "n_runs": 50,
+      "ghi_chu": "CHẬM HƠN 15W/torch2.4.1 (852ms) vì đây là torch CUDA build chạy CPU, không có kernel CPU tối ưu. KHÔNG đại diện — chỉ nên dùng số torch 2.4.1 (1.2 FPS) cho cột CPU."
+    }
+  },
+  "power_mode_khi_do": {
+    "cot_chinh": "MODE_15W_DESKTOP (nvpmodel 7)",
+    "maxn_tham_khao": "MAXN (nvpmodel 0) + jetson_clocks, 8 core @2265MHz"
+  }
+}

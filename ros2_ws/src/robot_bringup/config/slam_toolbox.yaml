@@ -1,0 +1,75 @@
+# slam_toolbox (online_async) - TUNED for Astra depth: FOV 58.6 deg + ~1m cap + odom-heavy.
+# ============================================================================
+# Differences from the stock /opt/ros/foxy/share/slam_toolbox/config/mapper_params_online_async.yaml:
+#   - base_frame: base_link  (matches base_bridge publishing odom->base_link; URDF base_link is the root)
+#   - max_laser_range: 1.0   (Astra cap ~1.02m - T0; >1m is garbage)
+#   - resolution: 0.03       (close objects, needs to be fine)
+#   - minimum_travel_*: small (DENSE scanning, drive slowly, compensate the narrow FOV)
+#   - loop/link distances shrunk for a <=4x4m area
+#   - trust ODOM over scan-match (FOV 58 deg -> weak scan matching): tighten the correlation search +
+#     penalize deviation from the odom prediction -> leverage the base's good EKF (IMU+optical flow).
+# See docs/PLAN_SLAM_NAV2.md T5.
+slam_toolbox:
+  ros__parameters:
+    # Solver
+    solver_plugin: solver_plugins::CeresSolver
+    ceres_linear_solver: SPARSE_NORMAL_CHOLESKY
+    ceres_preconditioner: SCHUR_JACOBI
+    ceres_trust_strategy: LEVENBERG_MARQUARDT
+    ceres_dogleg_type: TRADITIONAL_DOGLEG
+    ceres_loss_function: None
+
+    # Frame & topic
+    odom_frame: odom
+    map_frame: map
+    base_frame: base_link          # matches base_bridge (odom->base_link)
+    scan_topic: /scan
+    mode: mapping
+
+    debug_logging: false
+    throttle_scans: 1
+    transform_publish_period: 0.02
+    map_update_interval: 1.0        # see the map update faster (stock 5.0)
+    resolution: 0.03                # fine for close objects (stock 0.05)
+    max_laser_range: 1.0            # Astra cap ~1m (T0) - do NOT set 20.0
+    minimum_time_interval: 0.2      # driving slowly -> accept denser scans
+    transform_timeout: 0.2
+    tf_buffer_duration: 30.
+    stack_size_to_use: 40000000
+    enable_interactive_mode: true
+
+    # General - dense scanning (compensate the narrow FOV + short range)
+    use_scan_matching: true
+    use_scan_barycenter: true
+    minimum_travel_distance: 0.1    # stock 0.5 - accept a scan even with little motion
+    minimum_travel_heading: 0.1     # accept a scan even with little rotation (catch corner features)
+    scan_buffer_size: 20            # keep more scans for the matching chain
+    scan_buffer_maximum_scan_distance: 1.5
+    link_match_minimum_response_fine: 0.1
+    link_scan_maximum_distance: 1.0  # ~ Astra range
+    loop_search_maximum_distance: 2.0  # small area <=4x4m (stock 3.0)
+    do_loop_closing: true
+    loop_match_minimum_chain_size: 8
+    loop_match_maximum_variance_coarse: 3.0
+    loop_match_minimum_response_coarse: 0.35
+    loop_match_minimum_response_fine: 0.45
+
+    # Correlation - tighten the search around the odom prediction (trust odom more)
+    correlation_search_space_dimension: 0.3   # stock 0.5 - do not let the pose wander far from odom
+    correlation_search_space_resolution: 0.01
+    correlation_search_space_smear_deviation: 0.1
+
+    # Loop closure search
+    loop_search_space_dimension: 6.0
+    loop_search_space_resolution: 0.05
+    loop_search_space_smear_deviation: 0.03
+
+    # Scan matcher - penalize deviation from odom (narrow FOV, scan-match less trusted)
+    distance_variance_penalty: 0.5
+    angle_variance_penalty: 1.0
+    fine_search_angle_offset: 0.00349
+    coarse_search_angle_offset: 0.349
+    coarse_angle_resolution: 0.0349
+    minimum_angle_penalty: 0.9
+    minimum_distance_penalty: 0.5
+    use_response_expansion: true

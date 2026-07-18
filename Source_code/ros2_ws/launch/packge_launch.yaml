@@ -1,0 +1,42 @@
+launch:
+        - node: 
+                pkg: "cpp_package"
+                exec: "wifi_node"
+        - node:
+                pkg: "cpp_package"
+                exec: "explorer_node"
+
+        - node:
+                pkg: "nav2_planner"
+                exec: "planner_server"
+                param:
+                 - from: "$(find-pkg-share cpp_package)/config/nav2_params.yaml"
+
+        - node:
+                pkg: "nav2_controller"
+                exec: "controller_server"
+                param:
+                 - from: "$(find-pkg-share cpp_package)/config/nav2_params.yaml"
+
+        - node:
+                pkg: "nav2_recoveries"          
+                exec: "recoveries_server"       
+                name: "recoveries_server"
+                param:
+                 - from: "$(find-pkg-share cpp_package)/config/nav2_params.yaml"
+
+        - node:
+                pkg: "nav2_bt_navigator"
+                exec: "bt_navigator"
+                param:
+                 - from: "$(find-pkg-share cpp_package)/config/nav2_params.yaml"
+
+        - node:
+                pkg: "nav2_lifecycle_manager"
+                exec: "lifecycle_manager"
+                name: "lifecycle_manager_navigation"
+                param:
+                 - name: "node_names"
+                   value: ["planner_server", "controller_server", "recoveries_server", "bt_navigator"]
+                 - name: "autostart"
+                   value: true

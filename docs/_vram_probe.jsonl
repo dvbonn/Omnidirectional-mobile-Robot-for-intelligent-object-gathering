@@ -1,0 +1,6 @@
+{"ngl": -1, "label": "all(-1)", "vram_used_mib": 2501.3, "gpu_free_after_mib": 19277.2}
+{"ngl": 32, "label": "32", "vram_used_mib": 2440.5, "gpu_free_after_mib": 19338.0}
+{"ngl": 24, "label": "24", "vram_used_mib": 2282.5, "gpu_free_after_mib": 19496.0}
+{"ngl": 16, "label": "16", "vram_used_mib": 2112.5, "gpu_free_after_mib": 19666.0}
+{"ngl": 8, "label": "8", "vram_used_mib": 1929.5, "gpu_free_after_mib": 19848.9}
+{"ngl": 0, "label": "0", "vram_used_mib": 1510.0, "gpu_free_after_mib": 20268.5}

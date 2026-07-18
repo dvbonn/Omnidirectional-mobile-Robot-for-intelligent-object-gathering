@@ -1,0 +1,6 @@
+# Colcon workspace — không commit artefact build
+build/
+install/
+log/
+__pycache__/
+*.pyc

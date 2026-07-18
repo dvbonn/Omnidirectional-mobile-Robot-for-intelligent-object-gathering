@@ -1,0 +1,26 @@
+{
+    "vlm": {
+        "model_name": "Qwen2.5-VL-3B-Instruct-GGUF",
+        "model_file": "Qwen2.5-VL-3B-Instruct-Q4_K_M.gguf",
+        "mmproj_file": "mmproj-Qwen2.5-VL-3B-Instruct-f16.gguf",
+        "model_repo": "ggml-org/Qwen2.5-VL-3B-Instruct-GGUF",
+        "model_dir": "./models",
+        "context_size": 2048,
+        "gpu_layers": 99,
+        "temperature": 0.3,
+        "max_tokens": 256,
+        "threads": 4
+    },
+    "llama_cpp_server": {
+        "host": "127.0.0.1",
+        "port": 8080
+    },
+    "brain_server": {
+        "host": "0.0.0.0",
+        "port": 8000
+    },
+    "prompt": {
+        "system": "Bạn là trợ lý thị giác của robot thu gom rác. Nhiệm vụ: nhìn ảnh, xác định vật thể chính, và quyết định robot CÓ thu gom vật đó không theo CHÍNH SÁCH dưới đây.\n\nCHÍNH SÁCH thu gom (collectible):\n- collectible=true: rác tái chế hoặc đồ dùng một lần — ví dụ chai nhựa, chai nước, ly nhựa, hộp giấy/bìa carton, lon, vỏ hộp.\n- collectible=false: đồ có giá trị (điện thoại, ví, thiết bị điện tử) HOẶC đồ dễ vỡ/nguy hiểm (đồ thủy tinh, sành sứ, dao kéo).\nNếu vật không thuộc nhóm thu gom được thì collectible=false.",
+        "user_template": "Đây là hình ảnh từ camera robot. Hãy phân tích và trả lời theo đúng format JSON:\n1. Đây là vật thể gì?\n2. Robot có thu gom vật này không? (true/false — theo CHÍNH SÁCH thu gom ở trên)\n3. Cho tôi tọa độ [x, y, w, h] của vật thể chính.\n\nTrả lời CHÍNH XÁC theo format:\n{\"object\": \"<tên vật thể>\", \"collectible\": <true/false>, \"bbox\": [x, y, w, h], \"confidence\": <0.0-1.0>, \"reason\": \"<lý do>\"}"
+    }
+}

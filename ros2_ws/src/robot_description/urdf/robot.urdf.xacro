@@ -1,0 +1,150 @@
+<?xml version="1.0"?>
+<!--
+  robot.urdf.xacro - MECANUM BASE + ASTRA MODEL for the REAL stack (SLAM/NAV2, no Gazebo).
+  ============================================================================
+  Dimensions taken from ../../../mecanum_robot.urdf.xacro (hand-measured from the real hardware),
+  BUT with the frame convention the real pipeline needs - DIFFERENT from the Gazebo draft at the root:
+    - base_link is the tree ROOT (odom->base_link published by fake_odom/base_bridge).
+      base_footprint is a CHILD of base_link (if footprint were the parent -> base_link
+      would have 2 parents: odom + footprint -> BREAKS the TF tree).
+    - NO +90 deg rotation about Z: odom (vx/vy/vtheta) is already in the base_link X-forward frame;
+      adding a rotation would misalign scan/odom vs the running stack.
+    - Camera uses camera_depth_optical_frame + camera_color_optical_frame - MATCHES
+      astra_node/camera_manager (header.frame_id) + depthimage_to_laserscan.
+    - Wheels are FIXED (display only) -> NO joint_state_publisher needed.
+    - NO <gazebo> plugin (real-only). The Gazebo version is kept at the repo root.
+
+  TF tree (REP-105):
+    map -(slam)- odom -(fake_odom/base_bridge)- base_link -+- base_footprint
+                                                           +- wheel_{fl,fr,rl,rr}
+                                                           +- camera_link -+- camera_depth_optical_frame
+                                                                           +- camera_color_optical_frame
+-->
+<robot name="collecting_robot" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- Real dimensions (m, kg) -->
+  <xacro:property name="base_length" value="0.24"/>
+  <xacro:property name="base_width"  value="0.24"/>
+  <xacro:property name="base_height" value="0.116"/>
+  <xacro:property name="base_mass"   value="2.0"/>
+
+  <xacro:property name="wheel_radius" value="0.0485"/>
+  <xacro:property name="wheel_width"  value="0.038"/>
+  <xacro:property name="wheel_mass"   value="0.15"/>
+  <xacro:property name="wheel_x_off"  value="0.0785"/>   <!-- wheel center -> robot center, longitudinal -->
+  <xacro:property name="wheel_y_off"  value="0.148"/>    <!-- wheel center -> robot center, lateral -->
+
+  <!-- Astra camera relative to base_link (hand-measured) -->
+  <xacro:property name="cam_x" value="0.135"/>
+  <xacro:property name="cam_y" value="0.0"/>
+  <xacro:property name="cam_z" value="-0.05"/>           <!-- relative to the top of the body -->
+
+  <xacro:property name="PI" value="3.14159265359"/>
+
+  <material name="dark_gray"><color rgba="0.2 0.2 0.2 1.0"/></material>
+  <material name="black"><color rgba="0.1 0.1 0.1 1.0"/></material>
+  <material name="camera_blue"><color rgba="0.1 0.1 0.8 1.0"/></material>
+
+  <!-- Inertia macros -->
+  <xacro:macro name="box_inertia" params="m x y z">
+    <inertial>
+      <mass value="${m}"/>
+      <inertia ixx="${m*(y*y+z*z)/12}" ixy="0" ixz="0"
+               iyy="${m*(x*x+z*z)/12}" iyz="0"
+               izz="${m*(x*x+y*y)/12}"/>
+    </inertial>
+  </xacro:macro>
+
+  <xacro:macro name="cylinder_inertia" params="m r h">
+    <inertial>
+      <mass value="${m}"/>
+      <inertia ixx="${m*(3*r*r+h*h)/12}" ixy="0" ixz="0"
+               iyy="${m*(3*r*r+h*h)/12}" iyz="0"
+               izz="${m*r*r/2}"/>
+    </inertial>
+  </xacro:macro>
+
+  <!-- base_link: the navigation frame (tree ROOT, X-forward per REP-103) -->
+  <link name="base_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry><box size="${base_length} ${base_width} ${base_height}"/></geometry>
+      <material name="dark_gray"/>
+    </visual>
+    <collision>
+      <geometry><box size="${base_length} ${base_width} ${base_height}"/></geometry>
+    </collision>
+    <xacro:box_inertia m="${base_mass}" x="${base_length}" y="${base_width}" z="${base_height}"/>
+  </link>
+
+  <!-- base_footprint: ground projection (z=0), CHILD of base_link -->
+  <link name="base_footprint"/>
+  <joint name="base_to_footprint" type="fixed">
+    <parent link="base_link"/>
+    <child  link="base_footprint"/>
+    <origin xyz="0 0 ${-(base_height/2 + wheel_radius)}" rpy="0 0 0"/>
+  </joint>
+
+  <!-- Mecanum wheels (FIXED, display only; odom is NOT derived from the wheels) -->
+  <xacro:macro name="mecanum_wheel" params="name pos_x pos_y">
+    <link name="wheel_${name}_link">
+      <visual>
+        <origin xyz="0 0 0" rpy="${PI/2} 0 0"/>
+        <geometry><cylinder radius="${wheel_radius}" length="${wheel_width}"/></geometry>
+        <material name="black"/>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="${PI/2} 0 0"/>
+        <geometry><cylinder radius="${wheel_radius}" length="${wheel_width}"/></geometry>
+      </collision>
+      <xacro:cylinder_inertia m="${wheel_mass}" r="${wheel_radius}" h="${wheel_width}"/>
+    </link>
+    <joint name="wheel_${name}_joint" type="fixed">
+      <parent link="base_link"/>
+      <child  link="wheel_${name}_link"/>
+      <origin xyz="${pos_x} ${pos_y} ${-base_height/2}" rpy="0 0 0"/>
+    </joint>
+  </xacro:macro>
+
+  <xacro:mecanum_wheel name="fl" pos_x=" ${wheel_x_off}" pos_y=" ${wheel_y_off}"/>
+  <xacro:mecanum_wheel name="fr" pos_x=" ${wheel_x_off}" pos_y="-${wheel_y_off}"/>
+  <xacro:mecanum_wheel name="rl" pos_x="-${wheel_x_off}" pos_y=" ${wheel_y_off}"/>
+  <xacro:mecanum_wheel name="rr" pos_x="-${wheel_x_off}" pos_y="-${wheel_y_off}"/>
+
+  <!-- Astra camera: mechanical link + 2 optical frames (REP-103: z-forward) -->
+  <link name="camera_link">
+    <visual>
+      <geometry><box size="0.035 0.165 0.030"/></geometry>
+      <material name="camera_blue"/>
+    </visual>
+    <collision>
+      <geometry><box size="0.035 0.165 0.030"/></geometry>
+    </collision>
+    <inertial>
+      <mass value="0.17"/>
+      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+    </inertial>
+  </link>
+  <joint name="base_to_camera" type="fixed">
+    <parent link="base_link"/>
+    <child  link="camera_link"/>
+    <origin xyz="${cam_x} ${cam_y} ${base_height/2 + cam_z}" rpy="0 0 0"/>
+  </joint>
+
+  <!-- depth optical: matches astra_node/camera_manager frame_id + depth2scan output_frame -->
+  <link name="camera_depth_optical_frame"/>
+  <joint name="camera_to_depth_optical" type="fixed">
+    <parent link="camera_link"/>
+    <child  link="camera_depth_optical_frame"/>
+    <origin xyz="0 0 0" rpy="${-PI/2} 0 ${-PI/2}"/>
+  </joint>
+
+  <!-- color optical: matches camera_manager/astra_color_node (/camera/color/image_raw) -->
+  <link name="camera_color_optical_frame"/>
+  <joint name="camera_to_color_optical" type="fixed">
+    <parent link="camera_link"/>
+    <child  link="camera_color_optical_frame"/>
+    <origin xyz="0 0.015 0" rpy="${-PI/2} 0 ${-PI/2}"/>
+  </joint>
+
+</robot>

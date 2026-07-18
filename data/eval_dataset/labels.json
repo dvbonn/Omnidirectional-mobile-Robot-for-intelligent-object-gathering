@@ -1,0 +1,289 @@
+[
+  {
+    "file": "water_bottle_001.jpg",
+    "object": "water_bottle",
+    "label": "water bottle",
+    "collectible": true,
+    "coco_class": "bottle"
+  },
+  {
+    "file": "water_bottle_002.jpg",
+    "object": "water_bottle",
+    "label": "water bottle",
+    "collectible": true,
+    "coco_class": "bottle"
+  },
+  {
+    "file": "water_bottle_003.jpg",
+    "object": "water_bottle",
+    "label": "water bottle",
+    "collectible": true,
+    "coco_class": "bottle"
+  },
+  {
+    "file": "water_bottle_004.jpg",
+    "object": "water_bottle",
+    "label": "water bottle",
+    "collectible": true,
+    "coco_class": "bottle"
+  },
+  {
+    "file": "water_bottle_005.jpg",
+    "object": "water_bottle",
+    "label": "water bottle",
+    "collectible": true,
+    "coco_class": "bottle"
+  },
+  {
+    "file": "water_bottle_006.jpg",
+    "object": "water_bottle",
+    "label": "water bottle",
+    "collectible": true,
+    "coco_class": "bottle"
+  },
+  {
+    "file": "water_bottle_007.jpg",
+    "object": "water_bottle",
+    "label": "water bottle",
+    "collectible": true,
+    "coco_class": "bottle"
+  },
+  {
+    "file": "water_bottle_008.jpg",
+    "object": "water_bottle",
+    "label": "water bottle",
+    "collectible": true,
+    "coco_class": "bottle"
+  },
+  {
+    "file": "water_bottle_009.jpg",
+    "object": "water_bottle",
+    "label": "water bottle",
+    "collectible": true,
+    "coco_class": "bottle"
+  },
+  {
+    "file": "water_bottle_010.jpg",
+    "object": "water_bottle",
+    "label": "water bottle",
+    "collectible": true,
+    "coco_class": "bottle"
+  },
+  {
+    "file": "water_bottle_011.jpg",
+    "object": "water_bottle",
+    "label": "water bottle",
+    "collectible": true,
+    "coco_class": "bottle"
+  },
+  {
+    "file": "glass_cup_001.jpg",
+    "object": "glass_cup",
+    "label": "glass cup",
+    "collectible": false,
+    "coco_class": "cup"
+  },
+  {
+    "file": "glass_cup_002.jpg",
+    "object": "glass_cup",
+    "label": "glass cup",
+    "collectible": false,
+    "coco_class": "cup"
+  },
+  {
+    "file": "glass_cup_003.jpg",
+    "object": "glass_cup",
+    "label": "glass cup",
+    "collectible": false,
+    "coco_class": "cup"
+  },
+  {
+    "file": "glass_cup_004.jpg",
+    "object": "glass_cup",
+    "label": "glass cup",
+    "collectible": false,
+    "coco_class": "cup"
+  },
+  {
+    "file": "glass_cup_005.jpg",
+    "object": "glass_cup",
+    "label": "glass cup",
+    "collectible": false,
+    "coco_class": "cup"
+  },
+  {
+    "file": "glass_cup_006.jpg",
+    "object": "glass_cup",
+    "label": "glass cup",
+    "collectible": false,
+    "coco_class": "cup"
+  },
+  {
+    "file": "glass_cup_007.jpg",
+    "object": "glass_cup",
+    "label": "glass cup",
+    "collectible": false,
+    "coco_class": "cup"
+  },
+  {
+    "file": "glass_cup_008.jpg",
+    "object": "glass_cup",
+    "label": "glass cup",
+    "collectible": false,
+    "coco_class": "cup"
+  },
+  {
+    "file": "glass_cup_009.jpg",
+    "object": "glass_cup",
+    "label": "glass cup",
+    "collectible": false,
+    "coco_class": "cup"
+  },
+  {
+    "file": "glass_cup_010.jpg",
+    "object": "glass_cup",
+    "label": "glass cup",
+    "collectible": false,
+    "coco_class": "cup"
+  },
+  {
+    "file": "phone_001.jpg",
+    "object": "phone",
+    "label": "phone",
+    "collectible": false,
+    "coco_class": "cell phone"
+  },
+  {
+    "file": "phone_002.jpg",
+    "object": "phone",
+    "label": "phone",
+    "collectible": false,
+    "coco_class": "cell phone"
+  },
+  {
+    "file": "phone_003.jpg",
+    "object": "phone",
+    "label": "phone",
+    "collectible": false,
+    "coco_class": "cell phone"
+  },
+  {
+    "file": "phone_004.jpg",
+    "object": "phone",
+    "label": "phone",
+    "collectible": false,
+    "coco_class": "cell phone"
+  },
+  {
+    "file": "phone_005.jpg",
+    "object": "phone",
+    "label": "phone",
+    "collectible": false,
+    "coco_class": "cell phone"
+  },
+  {
+    "file": "phone_006.jpg",
+    "object": "phone",
+    "label": "phone",
+    "collectible": false,
+    "coco_class": "cell phone"
+  },
+  {
+    "file": "phone_007.jpg",
+    "object": "phone",
+    "label": "phone",
+    "collectible": false,
+    "coco_class": "cell phone"
+  },
+  {
+    "file": "phone_008.jpg",
+    "object": "phone",
+    "label": "phone",
+    "collectible": false,
+    "coco_class": "cell phone"
+  },
+  {
+    "file": "phone_009.jpg",
+    "object": "phone",
+    "label": "phone",
+    "collectible": false,
+    "coco_class": "cell phone"
+  },
+  {
+    "file": "phone_010.jpg",
+    "object": "phone",
+    "label": "phone",
+    "collectible": false,
+    "coco_class": "cell phone"
+  },
+  {
+    "file": "paper_box_001.jpg",
+    "object": "paper_box",
+    "label": "paper box",
+    "collectible": true,
+    "coco_class": null
+  },
+  {
+    "file": "paper_box_002.jpg",
+    "object": "paper_box",
+    "label": "paper box",
+    "collectible": true,
+    "coco_class": null
+  },
+  {
+    "file": "paper_box_003.jpg",
+    "object": "paper_box",
+    "label": "paper box",
+    "collectible": true,
+    "coco_class": null
+  },
+  {
+    "file": "paper_box_004.jpg",
+    "object": "paper_box",
+    "label": "paper box",
+    "collectible": true,
+    "coco_class": null
+  },
+  {
+    "file": "paper_box_005.jpg",
+    "object": "paper_box",
+    "label": "paper box",
+    "collectible": true,
+    "coco_class": null
+  },
+  {
+    "file": "paper_box_006.jpg",
+    "object": "paper_box",
+    "label": "paper box",
+    "collectible": true,
+    "coco_class": null
+  },
+  {
+    "file": "paper_box_007.jpg",
+    "object": "paper_box",
+    "label": "paper box",
+    "collectible": true,
+    "coco_class": null
+  },
+  {
+    "file": "paper_box_008.jpg",
+    "object": "paper_box",
+    "label": "paper box",
+    "collectible": true,
+    "coco_class": null
+  },
+  {
+    "file": "paper_box_009.jpg",
+    "object": "paper_box",
+    "label": "paper box",
+    "collectible": true,
+    "coco_class": null
+  },
+  {
+    "file": "paper_box_010.jpg",
+    "object": "paper_box",
+    "label": "paper box",
+    "collectible": true,
+    "coco_class": null
+  }
+]

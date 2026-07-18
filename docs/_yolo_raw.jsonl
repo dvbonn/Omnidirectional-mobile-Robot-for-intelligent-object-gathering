@@ -1,0 +1,2 @@
+{"device": "cuda", "torch": "1.13.0a0+410ce96a.nv22.12", "cuda_device": "Xavier", "fps": 42.4, "latency_avg_ms": 23.6, "latency_min_ms": 23.1, "latency_max_ms": 24.5, "ram_model_mb": 1178.0, "ram_total_mb": 1486.0, "ram_steady_mb": 2034.0, "avg_detections": 0.0, "n_runs": 100}
+{"device": "cpu", "torch": "1.13.0a0+410ce96a.nv22.12", "cuda_device": null, "fps": 0.4, "latency_avg_ms": 2421.0, "latency_min_ms": 2380.2, "latency_max_ms": 2495.0, "ram_model_mb": 19.0, "ram_total_mb": 321.0, "ram_steady_mb": 376.0, "avg_detections": 0.0, "n_runs": 50}

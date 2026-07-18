@@ -1,0 +1,57 @@
+# ─────────────────────────────────────────────────────────────
+# Python
+# ─────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.egg-info/
+.venv/
+venv/
+env/
+
+# ─────────────────────────────────────────────────────────────
+# Model weights & large binaries (fetched separately, see READMEs)
+# ─────────────────────────────────────────────────────────────
+*.pth
+*.gguf
+*.bin
+*.safetensors
+layer2_brain/models/
+# Keep the small YOLOv8n weight (needed for offline vision demo)
+!layer1_vision/model/yolov8n.pt
+
+# ─────────────────────────────────────────────────────────────
+# Build / install artifacts (never packaged)
+# ─────────────────────────────────────────────────────────────
+build/
+install/
+log/
+dist/
+bin/
+obj/
+.vs/
+# STM32 CMake output
+Source_code/STM32_Robot_arm/build/
+# ESP-IDF build output
+Source_code/Mecanum_robot/build/
+Source_code/Mecanum_robot/managed_components/
+# .NET MAUI output
+Source_code/Multi_platform_app/**/bin/
+Source_code/Multi_platform_app/**/obj/
+
+# ─────────────────────────────────────────────────────────────
+# Runtime temp / uploads
+# ─────────────────────────────────────────────────────────────
+layer1_vision/temp_images/
+layer2_brain/uploads/
+
+# ─────────────────────────────────────────────────────────────
+# IDE & OS
+# ─────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+desktop.ini

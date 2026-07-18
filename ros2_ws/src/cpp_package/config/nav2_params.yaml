@@ -1,0 +1,183 @@
+controller_server:
+  ros__parameters:
+
+    use_sim_time: true #testing in simulation
+    
+    controller_plugins: ["FollowPath"]
+    FollowPath:
+      plugin: "dwb_core::DWBLocalPlanner"
+
+      min_vel_x: -0.1
+      max_vel_x: 0.1
+      
+      min_vel_y: -0.1   
+      max_vel_y: 0.1
+      
+      min_vel_theta: -0.3
+      max_vel_theta: 0.3
+      #diagonal speed ??
+      max_speed_xy: 0.1
+
+      #allowed tolerance when the robot reaches the goal
+      xy_goal_tolerance: 0.15
+      yaw_goal_tolerance: 0.1
+      stateful: true
+
+      ##trajectory generation
+      #how many seconds of trajectory to simulate
+      sim_time: 1.5
+      #number of samples
+      vy_samples: 20
+      vx_samples: 10
+      vtheta_samples: 20
+
+      ##trajectory scoring functions
+      critics: ["RotateToGoal", "Oscillation", "BaseObstacle",
+          "GoalAlign", "PathAlign", "PathDist", "GoalDist"]
+      #stay close to the global path
+      PathDist.scale: 32.0
+      PathAlign.scale: 32.0
+      #prioritize reaching the goal
+      GoalDist.scale: 24.0
+      GoalAlign.scale: 24.0
+      #penalty for driving near obstacles
+        # BaseObstacle.scale:
+      #rotate toward the goal
+      RotateToGoal.scale: 32.0
+      #penalty for the robot oscillating direction
+        # Oscillation.scale:
+
+      
+
+local_costmap:
+  local_costmap:
+    ros__parameters:
+      width: 3
+      height: 3
+      resolution: 0.05
+      # robot_radius: 0.3
+      robot_radius: 0.1
+
+      rolling_window: true
+      use_sim_time: true #testing in simulation
+
+      plugins: ["obstacle_layer", "inflation_layer"]
+      obstacle_layer:
+        plugin: "nav2_costmap_2d::ObstacleLayer"
+        enabled: true
+        observation_sources: scan
+        scan:
+          topic: /scan
+          data_type: LaserScan
+          max_obstacle_height: 2.0
+          clearing: true
+          marking: true
+        # observation_sources: pointcloud
+        # pointcloud:
+        #   topic: /camera/depth/points
+        #   data_type: PointCloud2
+        #   min_obstacle_height: 0.05   # ignore the floor
+        #   max_obstacle_height: 2.0    # ignore the ceiling
+        #   obstacle_max_range: 4.0
+        #   obstacle_min_range: 0.3     # camera blind spot
+        #   raytrace_max_range: 4.5
+        #   raytrace_min_range: 0.0
+        #   clearing: true
+        #   marking: true
+      inflation_layer:
+        plugin: "nav2_costmap_2d::InflationLayer"
+        # inflation_radius: 0.5
+        inflation_radius: 0.3
+        cost_scaling_factor: 3.0
+
+global_costmap:
+  global_costmap:
+    ros__parameters:
+      resolution: 0.05
+      # robot_radius: 0.3
+      robot_radius: 0.1
+
+      use_sim_time: true #testing in simulation
+
+      plugins: ["static_layer", "inflation_layer"]
+      static_layer:
+        plugin: "nav2_costmap_2d::StaticLayer"
+        map_subscribe_transient_local: true
+      inflation_layer:
+        plugin: "nav2_costmap_2d::InflationLayer"
+        # inflation_radius: 0.55
+        inflation_radius: 0.3
+        cost_scaling_factor: 3.0
+
+planner_server:
+  ros__parameters:
+    planner_plugins: ["GridBased"]
+    GridBased:
+      plugin: "nav2_navfn_planner/NavfnPlanner"
+      tolerance: 0.5
+      use_astar: true
+      allow_unknown: true
+
+      use_sim_time: true #testing in simulation
+    
+bt_navigator:
+  ros__parameters:
+    global_frame: map
+    robot_base_frame: base_link
+    odom_topic: /odom
+    transform_tolerance: 0.5
+
+    use_sim_time: true #testing in simulation
+
+    default_bt_xml_filename: "navigate_w_replanning_and_recovery.xml"
+
+    plugin_lib_names:
+      - nav2_compute_path_to_pose_action_bt_node
+      - nav2_follow_path_action_bt_node
+      - nav2_back_up_action_bt_node
+      - nav2_spin_action_bt_node
+      - nav2_wait_action_bt_node
+      - nav2_clear_costmap_service_bt_node
+      - nav2_is_stuck_condition_bt_node
+      - nav2_goal_reached_condition_bt_node
+      - nav2_goal_updated_condition_bt_node
+      - nav2_initial_pose_received_condition_bt_node
+      - nav2_reinitialize_global_localization_service_bt_node
+      - nav2_rate_controller_bt_node
+      - nav2_distance_controller_bt_node
+      - nav2_speed_controller_bt_node
+      - nav2_truncate_path_action_bt_node
+      - nav2_recovery_node_bt_node
+      - nav2_pipeline_sequence_bt_node
+      - nav2_round_robin_node_bt_node
+      - nav2_transform_available_condition_bt_node
+      - nav2_time_expired_condition_bt_node
+      - nav2_distance_traveled_condition_bt_node
+
+recoveries_server:
+  ros__parameters:
+
+    use_sim_time: true #testing in simulation
+
+    costmap_topic: local_costmap/costmap_raw
+    footprint_topic: local_costmap/published_footprint
+    cycle_frequency: 10.0
+    recovery_plugins: ["spin", "back_up", "wait"]
+    spin:
+      plugin: "nav2_recoveries/Spin"
+    back_up:
+      plugin: "nav2_recoveries/BackUp"
+    wait:
+      plugin: "nav2_recoveries/Wait"
+
+lifecycle_manager:
+  ros__parameters:
+
+    use_sim_time: true #testing in simulation
+
+    autostart: true
+    node_names:
+      - planner_server
+      - controller_server
+      - recoveries_server
+      - bt_navigator
