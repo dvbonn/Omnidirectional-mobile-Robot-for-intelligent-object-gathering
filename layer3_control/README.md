@@ -2,7 +2,7 @@
 
 Điều khiển phần cứng tay gắp: nhận lệnh thu gom từ Brain (Layer 2) → tính **inverse kinematics** → gửi góc servo xuống board (Arduino/ESP32/STM32).
 
-> ⚠️ **Placeholder.** Kinematics và điều khiển phần cứng hiện **mô phỏng bằng log** — chưa nối board thật. Các hằng số cánh tay và camera là giả định, cần chỉnh theo phần cứng thực tế. Firmware tay gắp thật ở [`Source_code/STM32_Robot_arm/`](../Source_code/STM32_Robot_arm/).
+> **Lớp kiến trúc đặt sẵn cho việc ghép cánh tay gắp** — có chủ đích, không phải chỗ trống tạm. Kinematics và điều khiển phần cứng hiện **mô phỏng bằng log** (chưa nối board thật), các hằng số cánh tay/camera là giả định. Khi ghép cánh tay thật, lớp này sẽ hợp nhất **pose ước lượng từ EKF của đế** (`ROBOT_STATE`) **với toạ độ 3D từ depth Astra** để tính điểm gắp trong hệ toạ độ robot; nhờ tách riêng, Layer 1–2 không phải thay đổi khi lắp cơ cấu chấp hành. Firmware tay gắp thật ở [`Source_code/STM32_Robot_arm/`](../Source_code/STM32_Robot_arm/).
 
 ---
 
