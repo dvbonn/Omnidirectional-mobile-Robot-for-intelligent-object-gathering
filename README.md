@@ -6,7 +6,7 @@ Robot mecanum **tự hành thu gom rác tái chế**: điều hướng bằng **
 
 ---
 
-## ⚠️ Lưu ý về gói mã nguồn nộp (đọc trước)
+## ⚠️ Lưu ý về gói mã nguồn 
 
 Để tối ưu dung lượng, repo này **KHÔNG đóng gói** các thành phần nặng/tự sinh sau đây. Chúng được tạo lại tự động khi build/chạy (xem hướng dẫn bên dưới):
 
